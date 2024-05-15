@@ -73,6 +73,14 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+  #chat-history .bot-message{
+    display: flex;
+    flex-direction: column;
+  }
+  #chat-history .bot-message > *{
+    margin-top: 5px;
+  }
   </style>
 </head>
 <body>
@@ -88,10 +96,13 @@
 <div id="loader">
   <img src="loader.gif" width="150px" alt="Loading...">
 </div>
+<script src="https://markdown-it.github.io/markdown-it.js"></script>
   <script>
     const chatHistory = document.getElementById('chat-history');
     const userInput = document.getElementById('user-input');
     const form = document.getElementById('chat-form');
+
+    const md = window.markdownit();
 
     async function sendMessage() {
       const userMessage = userInput.value;
@@ -112,7 +123,14 @@
         console.log(botMessage)
         // Add chat message to the chat history
         chatHistory.innerHTML += `<div class="user-message">${userMessage}</div>`;
-        chatHistory.innerHTML += `<div class="bot-message">${botMessage}</div>`;
+        let botOut = document.createElement("div");
+        botOut.classList.add("bot-message");
+
+        console.log(md.render(botMessage));
+        
+        botOut.innerHTML = md.render(botMessage);
+        chatHistory.appendChild(botOut);
+        // chatHistory.innerHTML += `<div class="bot-message">${botMessage}</div>`;
 
         // Scroll to the bottom of the chat history
         chatHistory.scrollTop = chatHistory.scrollHeight;

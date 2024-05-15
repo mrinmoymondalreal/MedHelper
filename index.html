@@ -10,6 +10,8 @@
     align-items: center;
     min-height: 100vh;
     background-color: #f0f0f0;
+    display: flex;
+    gap: 0 10px;
   }
   
   #chat-container {
@@ -81,21 +83,37 @@
   #chat-history .bot-message > *{
     margin-top: 5px;
   }
+
+  #govt-container {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    min-height: 300px;
+    height: fit-content;
+  }
+
   </style>
 </head>
 <body>
-  <div id="chat-container">
-  <h1>MediHelper</h1>
-  <h4>Ask Rahul, the chatbox about your medicine.</h4>
-  <div id="chat-history"></div>
-  <form id="chat-form">
-    <input type="text" id="user-input" placeholder="Enter your message">
-    <button type="submit">Send</button>
-  </form>
-</div>
-<div id="loader">
-  <img src="loader.gif" width="150px" alt="Loading...">
-</div>
+  <div>
+    <div id="chat-container">
+      <h1>MediHelper</h1>
+      <h4>Ask Rahul, the chatbox about your medicine.</h4>
+      <div id="chat-history"></div>
+      <form id="chat-form">
+        <input type="text" id="user-input" placeholder="Enter your message">
+        <button type="submit">Send</button>
+      </form>
+    </div>
+    <div id="loader">
+      <img src="loader.gif" width="150px" alt="Loading...">
+    </div>
+  </div>
+  <div id="govt-container">
+
+  </div>
 <script src="https://markdown-it.github.io/markdown-it.js"></script>
   <script>
     const chatHistory = document.getElementById('chat-history');
@@ -114,7 +132,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userInput: userMessage, id: parseInt(location.search.replace("?id=")) }),
+          body: JSON.stringify({ userInput: userMessage, id: parseInt(location.search.replace("?id=", "")) }),
         });
 
         const data = await response.json();
@@ -148,6 +166,23 @@
       loader.style.display = 'none'; // Hide the loader after the message is sent
     });;
     });
+
+    async function getGovt(){
+      let d = await fetch('/govt?id='+parseInt(location.search.replace("?id=", "")));
+      d = (await d.json())
+      let str = "";
+      for(let i = 0;i < d.length;i++){
+        for(let j in d[i]){
+          str += `<b>${j}</b>: ${d[i][j]}`
+          str += "<br>"
+        }
+        str += "<br>";
+      }
+
+      document.querySelector("#govt-container").innerHTML = str;
+    }
+
+    getGovt();
   </script>
 </body>
 </html>
